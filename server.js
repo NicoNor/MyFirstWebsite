@@ -164,9 +164,9 @@ app.post('/register', function (req, res, next) {
 
 app.post('/add', function (req, res, next) {
     var item = new Item();
-    item.details = req.body.details:
+    item.details = req.body.details;
     item.isPublic = req.body.isPublic;
-    item.post_time = getDataTime();
+    item.post_time = getDateTime();
     item.owner = req.user.username;
 
     Item.create(item, function(err, saved) {
@@ -175,6 +175,47 @@ app.post('/add', function (req, res, next) {
         } else {
             res.json({ message : "item successfully registered!", item: saved})
         }
+    });
+});
+
+app.post('/edit', loggedIn, function (req, res, next) {
+    Item.findById({ _id: req.body._id }, function(err, item) {
+        if(err) {
+            console.log(err);
+            return res.json({ message : err });
+        } else {
+            //Modify new values here
+            item.details = req.body.details;
+            item.isPublic = req.body.isPublic;
+            item.edit_time = getDateTime();
+
+            //Save the new values
+            item.save(function(err){
+                if(err) {
+                    console.log(err);
+                    return res.json({ message : err });
+                } else {
+                    return res.json({ message : "Item successfully edited!" });
+                }
+            });
+       }
+   });
+});
+
+app.post('/delete', loggedIn, function (req, res, next) {
+    Item.findOneAndRemove({ _id: req.body._id }, function(err, item) {
+        if(err) {
+            console.log(err);
+            return res.json({ message : err });
+        } else {
+            return res.json({ message : "Item successfully deleted!"});
+        }
+    });
+});
+
+app.get('/items', loggedIn, function (req, res, next) {
+    Item.find({ owner: req.user.username }, function(err, item) {
+        return res.json(item);
     });
 });
 
