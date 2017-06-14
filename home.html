@@ -9,7 +9,12 @@
     <p>Hello <span class="username"></span>! </p>
     <p><a href="/logout">Logout</a> </p>
 
-    <table border="1px" width="100%">
+    <form>
+        <p>Add more to list: <input type="text" class="details" /></p>
+        <p>Public post? <input type="checkbox" class="isPublic" /></p>
+        <input type="button" onclick="addItem()" value="Add to list" />
+
+    <table border="1px" width="100%" id="itemtable">
         <tr>
             <th>Id</th>
             <th>Details</th>

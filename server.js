@@ -72,6 +72,16 @@ var UserSchema = new mongoose.Schema({
 //Create model object
 var User = mongoose.model('user', UserSchema);
 
+//Item Model
+var ItemSchema = new mongoose.Schema({
+      owner: String,
+      details: String,
+      post_time: String,
+      edit_time: String,
+      isPublic: Boolean
+});
+
+var Item = mongoose.model('item', ItemSchema);
 
 /***********
    Routes
@@ -152,12 +162,52 @@ app.post('/register', function (req, res, next) {
     });
 });
 
+app.post('/add', function (req, res, next) {
+    var item = new Item();
+    item.details = req.body.details:
+    item.isPublic = req.body.isPublic;
+    item.post_time = getDataTime();
+    item.owner = req.user.username;
+
+    Item.create(item, function(err, saved) {
+        if(err) {
+            console.log(err);
+        } else {
+            res.json({ message : "item successfully registered!", item: saved})
+        }
+    });
+});
+
 function loggedIn(req, res, next) {
     if (req.user) {
         next();
     } else {
       res.redirect('/');
     }
+}
+
+function getDateTime() {
+
+    var date = new Date();
+
+    var hour = date.getHours();
+    hour = (hour < 10 ? "0" : "") + hour;
+
+    var min = date.getMinutes();
+    min = (min < 10 ? "0" : "") + min;
+
+    var sec = date.getSeconds();
+    sec = (sec < 10 ? "0" : "") + sec;
+
+    var year = date.getFullYear();
+
+    var month = date.getMonth() + 1;
+    month = (month < 10 ? "0" : "") + month;
+
+    var day = date.getDate();
+    day = (day < 10 ? "0" : "") + day;
+
+    return year + ":" + month + ":" + day + " - " + hour + ":" + min + ":" + sec;
 }
 
 app.listen(port, '0.0.0.0', function() {

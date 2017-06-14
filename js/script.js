@@ -47,3 +47,35 @@ function getUser() {
         alert("Cannot fetch data. Please try again");
     });
 }
+
+function addItem() {
+    var details = document.getElementsByClassName("details")[0];
+    var isPublic = document.getElementsByClassName("isPublic")[0];
+
+    console.log(isPublic.checked);
+
+    $.ajax({
+        url: url + "/add",
+        method: "post",
+        data: {
+            details: details.value,
+            isPublic: isPublic.checked
+        }
+    }).success(function(response){
+        console.log(response);
+        alert("Item successfully added!");
+        //Append the data in the table
+        $("#itemtable").append("<tr>" +
+            "<td>" + response.item._id + "</td>" +
+            "<td>" + response.item.details + "</td>" +
+            "<td>" + response.item.post_time + "</td>" +
+            "<td>" + response.item.edit_time + "</td>" +
+            '<td><a href="">edit</a></td>' +
+            '<td><a href="">delete</a></td>' +
+            "<td>" + response.item.isPublic + "</td>" +
+            "</tr>");
+
+    }).error(function(response) {
+        alert("Cannot add item. Please try again");
+    });
+}
